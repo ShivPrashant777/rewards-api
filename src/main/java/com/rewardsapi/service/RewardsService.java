@@ -1,14 +1,13 @@
 package com.rewardsapi.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.rewardsapi.entity.StatementRecord;
 
+/*
+ * Service Interface defining the methods that should be implemented by 
+ * the rewards service class
+ */
 public interface RewardsService {
-	public int getRewardPointsByCustomerId(int customerId);
+	public int getTotalRewardPointsByCustomerId(int customerId);
 
-	public List<StatementRecord> getRewardPointsPerMonth(int customerId);
-
-	public Map<String, Integer> getEveryCustomerRewardPoints();
+	public StatementRecord getRewardPointsPerMonth(int customerId);
 }

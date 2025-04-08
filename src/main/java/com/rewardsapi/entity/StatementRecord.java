@@ -1,24 +1,29 @@
 package com.rewardsapi.entity;
 
+import java.util.List;
+
 /**
- * 
+ * POJO for a customer's statement containing full details including customer
+ * name, total rewards points earned and month-wise summary of spends and reward
+ * points
  */
 public class StatementRecord {
 	private int customerId;
 	private String customerName;
-	private String month;
-	private int rewardPoints;
+	private int totalRewardPoints;
+	private List<MonthlySummary> monthlySummary;
 
 	public StatementRecord() {
 		super();
 	}
 
-	public StatementRecord(int customerId, String customerName, String month, int rewardPoints) {
+	public StatementRecord(int customerId, String customerName, int totalRewardPoints,
+			List<MonthlySummary> monthlySummary) {
 		super();
 		this.customerId = customerId;
 		this.customerName = customerName;
-		this.month = month;
-		this.rewardPoints = rewardPoints;
+		this.totalRewardPoints = totalRewardPoints;
+		this.monthlySummary = monthlySummary;
 	}
 
 	public int getCustomerId() {
@@ -37,26 +42,25 @@ public class StatementRecord {
 		this.customerName = customerName;
 	}
 
-	public String getMonth() {
-		return month;
+	public int getTotalRewardPoints() {
+		return totalRewardPoints;
 	}
 
-	public void setMonth(String month) {
-		this.month = month;
+	public void setTotalRewardPoints(int totalRewardPoints) {
+		this.totalRewardPoints = totalRewardPoints;
 	}
 
-	public int getRewardPoints() {
-		return rewardPoints;
+	public List<MonthlySummary> getMonthlySummary() {
+		return monthlySummary;
 	}
 
-	public void setRewardPoints(int rewardPoints) {
-		this.rewardPoints = rewardPoints;
+	public void setMonthlySummary(List<MonthlySummary> monthlySummary) {
+		this.monthlySummary = monthlySummary;
 	}
 
 	@Override
 	public String toString() {
-		return "StatementRecord [customerId=" + customerId + ", customerName=" + customerName + ", month=" + month
-				+ ", rewardPoints=" + rewardPoints + "]";
+		return "StatementRecord [customerId=" + customerId + ", customerName=" + customerName + ", totalRewardPoints="
+				+ totalRewardPoints + ", monthlySummary=" + monthlySummary + "]";
 	}
-
 }

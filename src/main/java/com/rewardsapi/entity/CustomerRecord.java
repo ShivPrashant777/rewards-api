@@ -3,7 +3,8 @@ package com.rewardsapi.entity;
 import java.time.LocalDate;
 
 /**
- * 
+ * POJO for each customer record containing information about customer name,
+ * date of the transaction and the amount spent on that transaction
  */
 public class CustomerRecord {
 	private int customerId;
@@ -60,5 +61,4 @@ public class CustomerRecord {
 		return "CustomerRecord [customerId=" + customerId + ", customerName=" + customerName + ", transactionDate="
 				+ transactionDate + ", transactionAmount=" + transactionAmount + "]";
 	}
-
 }

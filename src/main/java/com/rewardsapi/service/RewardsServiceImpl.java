@@ -11,18 +11,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.rewardsapi.entity.CustomerRecord;
+import com.rewardsapi.entity.MonthlySummary;
 import com.rewardsapi.entity.StatementRecord;
+import com.rewardsapi.exception.CustomerNotFoundException;
 import com.rewardsapi.repository.CustomerRepository;
 
+/*
+ * An implementation of RewardsService interface containing the business logic
+ * for rewards-api
+ */
 @Service
 public class RewardsServiceImpl implements RewardsService {
+
+	private static final String CUSTOMER_NOT_FOUND = "Customer Records Not Found";
+
 	@Autowired
 	private CustomerRepository customerRepository;
 
+	/**
+	 * 
+	 * @param customerId: id of the customer
+	 * @description Returns the total number of reward points of a given customer.
+	 */
 	@Override
-	public int getRewardPointsByCustomerId(int customerId) {
+	public int getTotalRewardPointsByCustomerId(int customerId) {
 		List<CustomerRecord> customerRecordsByCustomerId = customerRepository
 				.getCustomerRecordsByCustomerId(customerId);
+		if (customerRecordsByCustomerId.isEmpty()) {
+			throw new CustomerNotFoundException(CUSTOMER_NOT_FOUND);
+		}
 		int totalPoints = 0;
 
 		for (CustomerRecord record : customerRecordsByCustomerId) {
@@ -32,28 +49,58 @@ public class RewardsServiceImpl implements RewardsService {
 		return totalPoints;
 	}
 
+	/**
+	 * 
+	 * @param customerId: id of the customer
+	 * @description Returns the complete statement of a given customer with
+	 *              month-wise spends and reward points received.
+	 */
 	@Override
-	public List<StatementRecord> getRewardPointsPerMonth(int customerId) {
+	public StatementRecord getRewardPointsPerMonth(int customerId) {
 		List<CustomerRecord> customerRecordsByCustomerId = customerRepository
 				.getCustomerRecordsByCustomerId(customerId);
-		Map<String, Integer> monthToPoints = new HashMap<>();
-		List<StatementRecord> statements = new ArrayList<>();
+		if (customerRecordsByCustomerId.isEmpty()) {
+			throw new CustomerNotFoundException(CUSTOMER_NOT_FOUND);
+		}
+		int totalRewardPoints = 0;
+		String customerName = customerRecordsByCustomerId.get(0).getCustomerName();
 
+		// maps month to the customer's records for that month
+		Map<String, List<CustomerRecord>> monthToRecords = new HashMap<>();
+		List<MonthlySummary> monthlySummary = new ArrayList<>();
+
+		// group records by month
 		for (CustomerRecord record : customerRecordsByCustomerId) {
 			String month = record.getTransactionDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-			int points = calculateRewardPoints(record.getTransactionAmount());
-			monthToPoints.put(month, monthToPoints.getOrDefault(month, 0) + points);
+			monthToRecords.putIfAbsent(month, new ArrayList<>());
+			monthToRecords.get(month).add(record);
 		}
 
-		String customerName = customerRecordsByCustomerId.get(0).getCustomerName();
-		for (Map.Entry<String, Integer> entry : monthToPoints.entrySet()) {
-			StatementRecord statement = new StatementRecord(customerId, customerName, entry.getKey(), entry.getValue());
-			statements.add(statement);
+		// create summary for each month
+		for (String month : monthToRecords.keySet()) {
+			double monthlyAmountSpent = 0;
+			int monthlyRewardPoints = 0;
+
+			for (CustomerRecord record : monthToRecords.get(month)) {
+				monthlyAmountSpent += record.getTransactionAmount();
+				int points = calculateRewardPoints(record.getTransactionAmount());
+				monthlyRewardPoints += points;
+				totalRewardPoints += points;
+			}
+			MonthlySummary summary = new MonthlySummary(month, monthlyAmountSpent, monthlyRewardPoints);
+			monthlySummary.add(summary);
 		}
 
-		return statements;
+		StatementRecord statement = new StatementRecord(customerId, customerName, totalRewardPoints, monthlySummary);
+		return statement;
 	}
 
+	/**
+	 * 
+	 * @param transactionAmount: money in dollars for a given transaction
+	 * @description Calculates and Returns reward points for a given transaction
+	 *              amount
+	 */
 	public int calculateRewardPoints(double transactionAmount) {
 		int points = 0;
 
@@ -65,18 +112,5 @@ public class RewardsServiceImpl implements RewardsService {
 		}
 
 		return points;
-	}
-
-	@Override
-	public Map<String, Integer> getEveryCustomerRewardPoints() {
-		List<CustomerRecord> allCustomerRecords = customerRepository.getAllCustomerRecords();
-		Map<String, Integer> res = new HashMap<>();
-
-		for (CustomerRecord record : allCustomerRecords) {
-			int points = getRewardPointsByCustomerId(record.getCustomerId());
-			res.put(record.getCustomerName(), points);
-		}
-
-		return res;
 	}
 }
