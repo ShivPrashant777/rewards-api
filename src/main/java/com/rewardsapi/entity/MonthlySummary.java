@@ -1,11 +1,13 @@
 package com.rewardsapi.entity;
 
+import java.time.Month;
+
 /*
  * POJO for month-wise stats like total amount 
  * spent per month and reward points earned that month
  */
 public class MonthlySummary {
-	private String month;
+	private Month month;
 	private double totalAmountSpent;
 	private int rewardPoints;
 
@@ -13,18 +15,18 @@ public class MonthlySummary {
 		super();
 	}
 
-	public MonthlySummary(String month, double totalAmountSpent, int rewardPoints) {
+	public MonthlySummary(Month month, double totalAmountSpent, int rewardPoints) {
 		super();
 		this.month = month;
 		this.totalAmountSpent = totalAmountSpent;
 		this.rewardPoints = rewardPoints;
 	}
 
-	public String getMonth() {
+	public Month getMonth() {
 		return month;
 	}
 
-	public void setMonth(String month) {
+	public void setMonth(Month month) {
 		this.month = month;
 	}
 

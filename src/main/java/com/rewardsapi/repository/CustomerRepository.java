@@ -23,10 +23,10 @@ public class CustomerRepository {
 		allCustomerRecords = new ArrayList<>();
 		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2025, 4, 1), 49.99));
 		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2025, 3, 1), 64.99));
-		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 7, 11), 189.99));
-		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2025, 12, 19), 139.49));
+		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2024, 7, 11), 189.99));
+		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2024, 12, 19), 139.49));
 		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2025, 2, 15), 529.49));
-		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 4, 22), 786.99));
+		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 4, 8), 786.99));
 		allCustomerRecords.add(new CustomerRecord(103, "Sam Smith", LocalDate.of(2025, 3, 16), 439.49));
 		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 3, 13), 67.99));
 		allCustomerRecords.add(new CustomerRecord(103, "Sam Smith", LocalDate.of(2025, 3, 5), 120.0));

@@ -9,5 +9,7 @@ import com.rewardsapi.entity.StatementRecord;
 public interface RewardsService {
 	public int getTotalRewardPointsByCustomerId(int customerId);
 
-	public StatementRecord getRewardPointsPerMonth(int customerId);
+	public StatementRecord get3MonthRewardPointsByCustomerId(int customerId);
+
+	public StatementRecord getRewardPointsPerMonthByCustomerId(int customerId);
 }

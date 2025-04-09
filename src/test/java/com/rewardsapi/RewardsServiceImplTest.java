@@ -1,16 +1,15 @@
 package com.rewardsapi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +42,10 @@ public class RewardsServiceImplTest {
 	@BeforeAll
 	static void beforeAll() {
 		records = new ArrayList<>();
-		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2024, 1, 15), 120.0));
-		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2024, 1, 20), 90.0));
-		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2024, 2, 12), 60.0));
+		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2025, 1, 15), 120.0));
+		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2025, 1, 20), 90.0));
+		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2025, 2, 12), 60.0));
+		records.add(new CustomerRecord(101, "John Doe", LocalDate.of(2024, 6, 9), 70.0));
 	}
 
 	@BeforeEach
@@ -62,7 +62,41 @@ public class RewardsServiceImplTest {
 		when(customerRepository.getCustomerRecordsByCustomerId(101)).thenReturn(records);
 		int totalPoints = rewardsService.getTotalRewardPointsByCustomerId(101);
 
-		assertEquals(140, totalPoints);
+		assertEquals(160, totalPoints);
+	}
+
+	/*
+	 * valid case for when a customer record exists, the function should return the
+	 * 3 month statement for the customer with the right values for customer name,
+	 * total reward points, total amount spent and reward points for any month
+	 */
+	@Test
+	void testGet3MonthRewardPointsByCustomerId_CustomerExists() {
+		when(customerRepository.getCustomerRecordsByCustomerId(101)).thenReturn(records);
+
+		StatementRecord statement = rewardsService.get3MonthRewardPointsByCustomerId(101);
+
+		assertEquals(2, statement.getMonthlySummary().size());
+		assertEquals(101, statement.getCustomerId());
+		assertEquals("John Doe", statement.getCustomerName());
+		assertEquals(140, statement.getTotalRewardPoints());
+
+		List<MonthlySummary> summary = statement.getMonthlySummary();
+		assertFalse(summary.isEmpty());
+	}
+
+	/*
+	 * invalid case for when a customer records don't exist, the function should
+	 * throw CustomerNotFoundException
+	 */
+	@Test
+	void testGet3MonthRewardPointsByCustomerId_CustomerRecordsNotFound() {
+		when(customerRepository.getCustomerRecordsByCustomerId(404)).thenReturn(Collections.emptyList());
+
+		CustomerNotFoundException exception = assertThrows(CustomerNotFoundException.class,
+				() -> rewardsService.get3MonthRewardPointsByCustomerId(404));
+
+		assertEquals("Customer Records Not Found", exception.getMessage());
 	}
 
 	/*
@@ -88,17 +122,16 @@ public class RewardsServiceImplTest {
 	void testGetRewardPointsPerMonth_CustomerExists() {
 		when(customerRepository.getCustomerRecordsByCustomerId(101)).thenReturn(records);
 
-		StatementRecord statement = rewardsService.getRewardPointsPerMonth(101);
+		StatementRecord statement = rewardsService.getRewardPointsPerMonthByCustomerId(101);
 
-		assertEquals(2, statement.getMonthlySummary().size());
+		assertEquals(3, statement.getMonthlySummary().size());
 		assertEquals("John Doe", statement.getCustomerName());
-		assertEquals(140, statement.getTotalRewardPoints());
+		assertEquals(160, statement.getTotalRewardPoints());
 
 		// get monthly summary of January
 		MonthlySummary janSummary = null;
-		String janMonthString = Month.JANUARY.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
 		for (MonthlySummary summary : statement.getMonthlySummary()) {
-			if (summary.getMonth().equals(janMonthString)) {
+			if (summary.getMonth().equals(Month.JANUARY)) {
 				janSummary = summary;
 				break;
 			}
@@ -116,7 +149,7 @@ public class RewardsServiceImplTest {
 	void testGetRewardPointsPerMonth_CustomerRecordsNotFound() {
 		when(customerRepository.getCustomerRecordsByCustomerId(203)).thenReturn(Collections.emptyList());
 		CustomerNotFoundException exception = assertThrows(CustomerNotFoundException.class,
-				() -> rewardsService.getRewardPointsPerMonth(203));
+				() -> rewardsService.getRewardPointsPerMonthByCustomerId(203));
 		assertEquals("Customer Records Not Found", exception.getMessage());
 	}
 

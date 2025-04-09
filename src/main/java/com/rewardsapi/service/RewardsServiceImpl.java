@@ -1,11 +1,12 @@
 package com.rewardsapi.service;
 
-import java.time.format.TextStyle;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,32 +53,67 @@ public class RewardsServiceImpl implements RewardsService {
 	/**
 	 * 
 	 * @param customerId: id of the customer
-	 * @description Returns the complete statement of a given customer with
+	 * @description Returns the 3 month statement of a given customer with
 	 *              month-wise spends and reward points received.
 	 */
 	@Override
-	public StatementRecord getRewardPointsPerMonth(int customerId) {
+	public StatementRecord get3MonthRewardPointsByCustomerId(int customerId) {
 		List<CustomerRecord> customerRecordsByCustomerId = customerRepository
 				.getCustomerRecordsByCustomerId(customerId);
 		if (customerRecordsByCustomerId.isEmpty()) {
 			throw new CustomerNotFoundException(CUSTOMER_NOT_FOUND);
 		}
+
+		// filter out last 3 month records
+		List<CustomerRecord> threeMonthRecordsOfCustomer = customerRecordsByCustomerId.stream()
+				.filter(record -> record.getTransactionDate().isAfter(LocalDate.now().minusMonths(3)))
+				.collect(Collectors.toList());
+
+		return generateStatement(threeMonthRecordsOfCustomer);
+	}
+
+	/**
+	 * 
+	 * @param customerId: id of the customer
+	 * @description Returns the complete statement of a given customer with
+	 *              month-wise spends and reward points received.
+	 */
+	@Override
+	public StatementRecord getRewardPointsPerMonthByCustomerId(int customerId) {
+		List<CustomerRecord> customerRecordsByCustomerId = customerRepository
+				.getCustomerRecordsByCustomerId(customerId);
+
+		return generateStatement(customerRecordsByCustomerId);
+	}
+
+	/**
+	 * 
+	 * @param customerRecords: a list of customer records
+	 * @description Helper function that returns the statement of a given customer
+	 *              with month-wise spends and reward points received for that list
+	 *              of records.
+	 */
+	public StatementRecord generateStatement(List<CustomerRecord> customerRecords) {
+		if (customerRecords.isEmpty()) {
+			throw new CustomerNotFoundException(CUSTOMER_NOT_FOUND);
+		}
 		int totalRewardPoints = 0;
-		String customerName = customerRecordsByCustomerId.get(0).getCustomerName();
+		int customerId = customerRecords.get(0).getCustomerId();
+		String customerName = customerRecords.get(0).getCustomerName();
 
 		// maps month to the customer's records for that month
-		Map<String, List<CustomerRecord>> monthToRecords = new HashMap<>();
+		Map<Month, List<CustomerRecord>> monthToRecords = new HashMap<>();
 		List<MonthlySummary> monthlySummary = new ArrayList<>();
 
 		// group records by month
-		for (CustomerRecord record : customerRecordsByCustomerId) {
-			String month = record.getTransactionDate().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+		for (CustomerRecord record : customerRecords) {
+			Month month = record.getTransactionDate().getMonth();
 			monthToRecords.putIfAbsent(month, new ArrayList<>());
 			monthToRecords.get(month).add(record);
 		}
 
 		// create summary for each month
-		for (String month : monthToRecords.keySet()) {
+		for (Month month : monthToRecords.keySet()) {
 			double monthlyAmountSpent = 0;
 			int monthlyRewardPoints = 0;
 
