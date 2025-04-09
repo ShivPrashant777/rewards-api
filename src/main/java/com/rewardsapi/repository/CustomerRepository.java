@@ -29,7 +29,7 @@ public class CustomerRepository {
 		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 4, 22), 786.99));
 		allCustomerRecords.add(new CustomerRecord(103, "Sam Smith", LocalDate.of(2025, 3, 16), 439.49));
 		allCustomerRecords.add(new CustomerRecord(102, "John Doe", LocalDate.of(2025, 3, 13), 67.99));
-		allCustomerRecords.add(new CustomerRecord(103, "Sam Smith", LocalDate.of(2025, 3, 5), 120));
+		allCustomerRecords.add(new CustomerRecord(103, "Sam Smith", LocalDate.of(2025, 3, 5), 120.0));
 		allCustomerRecords.add(new CustomerRecord(101, "Jane Doe", LocalDate.of(2025, 2, 25), 64.99));
 	}
 
