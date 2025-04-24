@@ -41,26 +41,27 @@ src
 │   ├── java
 │   │   └── com.rewardsapi
 │   │           ├── controller
-│   │           │    └── RewardsController        
+│   │           │    └── RewardsController.java   
 │   │           ├── service           
-│   │           │    └── RewardsService
-│   │           │    └── RewardsServiceImpl
-│   │           ├── repository 
+│   │           │    └── RewardsService.java
+│   │           │    └── RewardsServiceImpl.java
+│   │           ├── repository
+│   │           │    └── CustomerRepository.java
 │   │           ├── entity  
-│   │           │   └── CustomerRecord
-│   │           │   └── MonthlySummary
-│   │           │   └── StatementRecord
+│   │           │   └── CustomerRecord.java
+│   │           │   └── MonthlySummary.java
+│   │           │   └── StatementRecord.java
 │   │           └── exception          
-│   │               └── CustomerNotFoundException
-│   │               └── GlobalExceptionHandler
+│   │               └── CustomerNotFoundException.java
+│   │               └── GlobalExceptionHandler.java
 │   └── resources
 │       └── application.properties
 │
 ├── test
 │   └── java
 │       └── com.rewardsapi
-│           └── RewardsControllerTest
-│           └── RewardsServiceImplTest
+│           └── RewardsControllerTest.java
+│           └── RewardsServiceImplTest.java
 ```
 
 ## API Endpoints
