@@ -48,7 +48,7 @@ For a given dataset of customer records containing transaction details, the proj
    1064
    ```
 
-2. **GET** ``/api/get-3-month-reward-points/{customerId}`
+2. **GET** `/api/get-3-month-reward-points/{customerId}`
    
    Returns the number of reward points of a given customer during the last 3 months.
    
@@ -79,7 +79,7 @@ For a given dataset of customer records containing transaction details, the proj
    }
    ```
 
-3. **GET** ``/api/get-reward-points-per-month/{customerId}`
+3. **GET** `/api/get-reward-points-per-month/{customerId}`
    
    Returns the complete statement of a given customer with month-wise spends and reward points received.
    
