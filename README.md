@@ -4,20 +4,6 @@
 
 For a given dataset of customer records containing transaction details, the project provides api endpoints to calculate and return the reward points earned for each customer. It can generate complete statements or statement for the last 3 months.
 
-## Stack
-
-1. Java 17
-
-2. Spring Boot 3.4.4
-
-3. Spring Boot Test 3.4.4
-
-4. Mockito 5.14.2
-
-5. Java Collections Framework for Emulating Database
-
-## Project Structure
-
 - The project follows the standard guidelines for Rest APIs built using Spring Boot. The API endpoints are described in the `RewardsController` class.
 
 - The business logic is written in `RewardsServiceImpl` class which implements the `RewardsService` interface for loose coupling.
@@ -34,7 +20,48 @@ For a given dataset of customer records containing transaction details, the proj
 
 - Exception Handling is performed in the `GlobalExceptionHandler` class which also handles the custom exception `CustomerNotFoundException`.
 
-- Unit Tests are written in `RewardsServiceImplTest` class.
+- Unit Tests are written in `RewardsServiceImplTest` and `RewardsControllerTest` class.
+
+## Stack
+
+1. Java 17
+
+2. Spring Boot 3.4.4
+
+3. Spring Boot Test 3.4.4
+
+4. Mockito 5.14.2
+
+5. Java Collections Framework for Emulating Database
+
+## Project Structure
+```pre
+src
+├── main
+│   ├── java
+│   │   └── com.rewardsapi
+│   │           ├── controller
+│   │           │    └── RewardsController        
+│   │           ├── service           
+│   │           │    └── RewardsService
+│   │           │    └── RewardsServiceImpl
+│   │           ├── repository 
+│   │           ├── entity  
+│   │           │   └── CustomerRecord
+│   │           │   └── MonthlySummary
+│   │           │   └── StatementRecord
+│   │           └── exception          
+│   │               └── CustomerNotFoundException
+│   │               └── GlobalExceptionHandler
+│   └── resources
+│       └── application.properties
+│
+├── test
+│   └── java
+│       └── com.rewardsapi
+│           └── RewardsControllerTest
+│           └── RewardsServiceImplTest
+```
 
 ## API Endpoints
 
